@@ -12,4 +12,5 @@ struct BookResponse: Codable {
     let title: String
     let author: String
     let cover: String
+    let href: String
 }

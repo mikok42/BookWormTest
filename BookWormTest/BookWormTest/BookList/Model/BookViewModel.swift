@@ -8,9 +8,8 @@
 import Foundation
 
 @MainActor
-final class BookViewModel: ObservableObject {
-    private let client = Client()
-    private let url = URL(string: "https://wolnelektury.pl/api/books/")
+final class BookViewModel: BaseViewModel {
+    private let url = URL(string: Constants.apiURL + "books/")
     
     @Published private(set) var books: [BookResponse] = []
     @Published private(set) var booksSlice: [BookResponse] = []
@@ -20,12 +19,12 @@ final class BookViewModel: ObservableObject {
     func fetchCharacters() async {
         guard let url else { return }
         let request = URLRequest(url: url)
-        let result: Result<[BookResponse], ApiError> = await client.fetch(request: request)
+        let result: Result<[BookResponse], ApiError> = await apiClient.fetch(request: request)
         
         switch result {
         case let .success(success):
             self.books = success
-            self.booksSlice = Array(books[0...20])
+            self.booksSlice = Array(books[0...100])
         case let .failure(failure):
             self.error = failure
             self.hasError = true

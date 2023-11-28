@@ -11,23 +11,23 @@ struct ContentView: View {
     @StateObject var viewModel = BookViewModel()
     
     var layout: [GridItem] {
-        .init(repeating: GridItem(.flexible(minimum: 150)), count: 2)
-        
+        [GridItem(.fixed(200)) ]
     }
     
     var body: some View {
         ScrollView() {
-            LazyVGrid(columns: layout, content: {
+            LazyVStack {
                 ForEach(viewModel.booksSlice, id: \.title) { book in
                     BookView(book: book)
+                        .frame(height: 200)
+                        .padding(10)
                 }
-            })
-        }
-        .task {
-            await viewModel.fetchCharacters()
-        }
-        .alert(viewModel.error?.getDescription ?? "", isPresented: $viewModel.hasError) {
-            Text("No books for you :(")
+            }.task {
+                await viewModel.fetchCharacters()
+            }
+            .alert(viewModel.error?.getDescription ?? "", isPresented: $viewModel.hasError) {
+                Text("No books for you :(")
+            }
         }
     }
 }
